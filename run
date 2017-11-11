@@ -1,0 +1,20 @@
+#!/bin/bash
+cd /root/src/RecommenderSystem
+hdfs dfs -rm -r /input
+hdfs dfs -mkdir /input
+hdfs dfs -put input/* /input
+hdfs dfs -rm -r /dataDividedByUser
+hdfs dfs -rm -r /coOccurrenceMatrix
+hdfs dfs -rm -r /Normalize
+hdfs dfs -rm -r /Multiplication
+hdfs dfs -rm -r /Sum
+cd src/main/java/
+hadoop com.sun.tools.javac.Main *.java
+jar cf recommender.jar *.class
+hadoop jar recommender.jar Driver /input /dataDividedByUser /coOccurrenceMatrix /Normalize /Multiplication /Sum
+cd ../../../
+hdfs dfs -get /dataDividedByUser/part-r-00000 dataDividedByUser
+hdfs dfs -get /coOccurrenceMatrix/part-r-00000 coOccurrenceMatrix
+hdfs dfs -get /Normalize/part-r-00000 Normalize
+hdfs dfs -get /Multiplication/part-r-00000 Multiplication
+hdfs dfs -get /Sum/part-r-00000 Sum
